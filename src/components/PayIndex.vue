@@ -25,6 +25,14 @@
       <el-main>
         <el-row>
           <el-col :span="18">
+            <!-- <el-row>
+              <el-col :span="12">
+              </el-col>
+              <el-col :span="12">
+                <el-row>1231</el-row>
+                <el-row>123</el-row>
+              </el-col>
+            </el-row> -->
             <el-row v-for="(item, index) in news" :key="index">
               <el-card class="box-card" shadow="hover">
                 <div slot="header" @click="visible = true">
@@ -52,6 +60,21 @@
               <div v-for="(item, index) in sortList" :key="index" class="list-div">
                 {{item}}
               </div>
+            </el-card>
+            <el-card shadow="hover" class="margin-top">
+              <div slot="header" class="title-card">
+                <el-tag type="danger"></el-tag>
+                <span class="title-text">24小时热文</span>
+              </div>
+              <el-row :gutter="5" v-for="(item, index) in hotPaper" :key="index">
+                <el-col :span="6">
+                  <el-tag type="warning">{{index + 1}}</el-tag>
+                </el-col>
+                <el-col :span="18">
+                  <div class="text hot-paper-titel">{{item.title}}</div>
+                  <div class="text min-font-size">{{item.read}}阅读</div>
+                </el-col>
+              </el-row>
             </el-card>
           </el-col>
         </el-row>
@@ -93,7 +116,15 @@ export default {
         {title: '华帝回应京津地区产品停售：渠道正在逐步恢复中', des: '有消息称，华帝股份在京津地区的所有产品已全部停止销售、售后、安装和配送。'},
         {title: '证监会：股票质押融资业务实际平仓风险有限', des: '日前，中国证监会上市公司监管部与中国上市公司协会共同举办的2018年第4期上市公司董事长、总经理研修班成功举办。'}
       ],
-      sortList: ['军事', '图片', '航空', '科技', '房产']
+      sortList: ['军事', '图片', '航空', '科技', '房产'],
+      hotPaper: [
+        { title: '哈尔滨交通执法腐败:251人被查 传前交通局长自杀', read: '20万' },
+        { title: '四川江安县一工业园区发生爆燃事故，致19人死亡12人受伤', read: '5万' },
+        { title: '实现零突破！中国自主研发抗艾滋病新药获批上市', read: '8万' },
+        { title: '央视“最低调”的主持人，工作26年从不化妆，妻子是央视“才女”', read: '10万' },
+        { title: '湖南慈利县一部长被指欺压寡妇，官方：言语不当，责令写检查', read: '3千' },
+        { title: '伊万卡遭邻居“围攻”豪宅抗议：我们受够你爸了', read: '9千' }
+      ]
     }
   },
   methods: {
@@ -177,6 +208,29 @@ export default {
   }
   .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
     opacity: 0;
+  }
+  .title-card {
+    text-align: left;
+  }
+  .title-card .el-tag {
+    height: 20px;
+    width: 7px;
+    padding: 0;
+  }
+  .title-card .title-text {
+    position: relative;
+    left: 2px;
+    top: -3px;
+  }
+  .min-font-size {
+    font-size: 12px;
+    text-align: right;
+  }
+  .hot-paper-titel {
+    font-size: 12px;
+    text-align: left;
+    color: black;
+    cursor: pointer;
   }
 </style>
 <style>
