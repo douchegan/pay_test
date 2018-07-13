@@ -40,10 +40,9 @@
                 </div>
                 <el-row :gutter="20">
                   <el-col :span="6">
-                    <img style="width: 100%" src="./../assets/news/new1.jpg"/>
+                    <img style="width: 100%" v-bind:src="item.img"/>
                   </el-col>
                   <el-col :span="18">
-                    <div class="text">{{item.des}}</div>
                     <div class="text">{{item.des}}</div>
                   </el-col>
                 </el-row>
@@ -94,9 +93,9 @@
       </el-dialog>
     </el-container>
     <el-footer>
-      <div>贝业思数据智能技术服务</div>
-      <div>地址：XXXXXXXXXX</div>
-      <div>服务热线：333333333333</div>
+      <div>北京欧拉数术科技有限公司</div>
+      <div>地址：北京市大兴区凉水河一街10号院1号楼9层902室</div>
+      <div>服务热线：086-010-85322946</div>
       <div>我们一直致力于帮助企业健康长远的发展</div>
     </el-footer>
   </div>
@@ -111,10 +110,10 @@ export default {
       visible: false,
       payPageShow: false,
       news: [
-        {title: '国务院：免去杨国中的国家外汇管理局副局长职务', des: '国务院任免国家工作人员。任命于文明为国家中医药管理局局长；任命余艳红（女）为国家中医药管理局副局长。免去胡静林的财政部副部长职务；免去杨国中的国家外汇管理局副局长职务'},
-        {title: '汇率波动加大 中企在外汇市场不能"裸奔', des: '中国人民银行副行长、国家外汇管理局局长潘功胜在第一财经《中国经济论坛》中指出，人民币资本项目的开放目前存在着可兑换程度较低、便利性不高和交易环节约束多等问题'},
-        {title: '华帝回应京津地区产品停售：渠道正在逐步恢复中', des: '有消息称，华帝股份在京津地区的所有产品已全部停止销售、售后、安装和配送。'},
-        {title: '证监会：股票质押融资业务实际平仓风险有限', des: '日前，中国证监会上市公司监管部与中国上市公司协会共同举办的2018年第4期上市公司董事长、总经理研修班成功举办。'}
+        {img: require('@/assets/news/img1.jpg'), title: '辽宁打掉7个油耗子团伙:有警察遭捆绑虐打被丢雪地', des: '从“油耗子”盗采原油卖给收油窝点，再转运到多个小炼油厂提纯，最后输送到大炼油厂非法加工成石油制品。'},
+        {img: require('@/assets/news/img2.png'), title: '关于新时代中阿关系，习近平这样说', des: '7月10日，中国—阿拉伯国家合作论坛第八届部长级会议在北京举行，国家主席习近平出席开幕式并发表重要讲话。'},
+        {img: require('@/assets/news/img3.jpg'), title: '世贸组织总干事：中国在各个方面是积极参与者', des: '央视网消息：世贸组织第七次对中国贸易政策审议目前正在日内瓦举行。审议期间，央视驻日内瓦记者对世贸组织总干事阿泽维多进行了独家专访，他就近年来中国贸易的发展、现今国际贸易局势以及未来中国在世贸组织中将发挥的作用等问题做了全面的阐述。'},
+        {img: require('@/assets/news/img4.jpg'), title: '为金靴奖拼了！凯恩请缨出战比利时 不想留下遗憾', des: '英媒体《每日镜报》的消息，英格兰头号射手哈里-凯恩已经向主教练索斯盖特主动请缨，他要求参加对阵比利时的三四名决赛。'}
       ],
       sortList: ['军事', '图片', '航空', '科技', '房产'],
       hotPaper: [
@@ -178,9 +177,10 @@ export default {
     padding: 10px;
   }
   .text{
-    white-space: nowrap;
+    /* white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: hidden;
+    overflow: hidden; */
+    text-align: left;
     color: #a7a7a7;
   }
   .el-footer{
