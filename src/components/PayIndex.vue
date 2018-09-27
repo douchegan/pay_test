@@ -5,11 +5,12 @@
         <el-menu
           background-color="#409eff"
           text-color="#fff"
-          :default-active="1"
+          :default-active="activeIndex"
           active-text-color="#ffd740"
           mode="horizontal"
+          @select="sortListClick"
         >
-          <el-menu-item >
+          <el-menu-item :index="'logo'">
             <div style="text-align: left;">
               <img style="height: 50px" src="@/assets/logo-ola.png">
               <div class="ola-title">欧拉数术</div>
@@ -24,15 +25,7 @@
       </el-header>
       <el-main>
         <el-row>
-          <el-col :span="18">
-            <!-- <el-row>
-              <el-col :span="12">
-              </el-col>
-              <el-col :span="12">
-                <el-row>1231</el-row>
-                <el-row>123</el-row>
-              </el-col>
-            </el-row> -->
+          <el-col v-if="!hotShow" :span="18" v-loading="loading">
             <el-row v-for="(item, index) in news" :key="index">
               <el-card class="box-card" shadow="hover">
                 <div slot="header" @click="visible = true">
@@ -50,13 +43,20 @@
             </el-row>
             <el-pagination
               background
+              :page-size="pagination.pageSize"
               layout="prev, pager, next"
-              :total="1000">
+              :current-page.sync="pagination.currPage"
+              :total="pagination.total">
             </el-pagination>
+          </el-col>
+          <el-col v-else :span="18" class="hot-detail">
+            <div class="title">{{hotDetail.title}}</div>
+            <div class="sub-title">{{hotDetail.subhead}}</div>
+            <div class="text" v-html="hotDetail.text"></div>
           </el-col>
           <el-col :span="6">
             <el-card shadow="hover" class="margin-top">
-              <div v-for="(item, index) in sortList" :key="index" class="list-div">
+              <div v-for="(item, index) in sortList" :key="index" class="list-div" @click="sortListClick(index)">
                 {{item}}
               </div>
             </el-card>
@@ -70,7 +70,7 @@
                   <el-tag type="warning">{{index + 1}}</el-tag>
                 </el-col>
                 <el-col :span="18">
-                  <div class="text hot-paper-titel">{{item.title}}</div>
+                  <div class="text hot-paper-titel" @click="hotClick(index)">{{item.title}}</div>
                   <div class="text min-font-size">{{item.read}}阅读</div>
                 </el-col>
               </el-row>
@@ -97,33 +97,32 @@
       <div>地址：北京市大兴区凉水河一街10号院1号楼9层902室</div>
       <div>服务热线：086-010-85322946</div>
       <div>我们一直致力于帮助企业健康长远的发展</div>
+      <div>京ICP备18037012号</div>
     </el-footer>
   </div>
 </template>
 
 <script>
 import pay from './pay.vue'
+import newData from './newData.js'
 export default {
   name: 'HelloWorld',
   data () {
     return {
+      activeIndex: 'picture',
       visible: false,
       payPageShow: false,
-      news: [
-        {img: require('@/assets/news/img1.jpg'), title: '辽宁打掉7个油耗子团伙:有警察遭捆绑虐打被丢雪地', des: '从“油耗子”盗采原油卖给收油窝点，再转运到多个小炼油厂提纯，最后输送到大炼油厂非法加工成石油制品。'},
-        {img: require('@/assets/news/img2.png'), title: '关于新时代中阿关系，习近平这样说', des: '7月10日，中国—阿拉伯国家合作论坛第八届部长级会议在北京举行，国家主席习近平出席开幕式并发表重要讲话。'},
-        {img: require('@/assets/news/img3.jpg'), title: '世贸组织总干事：中国在各个方面是积极参与者', des: '央视网消息：世贸组织第七次对中国贸易政策审议目前正在日内瓦举行。审议期间，央视驻日内瓦记者对世贸组织总干事阿泽维多进行了独家专访，他就近年来中国贸易的发展、现今国际贸易局势以及未来中国在世贸组织中将发挥的作用等问题做了全面的阐述。'},
-        {img: require('@/assets/news/img4.jpg'), title: '为金靴奖拼了！凯恩请缨出战比利时 不想留下遗憾', des: '英媒体《每日镜报》的消息，英格兰头号射手哈里-凯恩已经向主教练索斯盖特主动请缨，他要求参加对阵比利时的三四名决赛。'}
-      ],
-      sortList: ['军事', '图片', '航空', '科技', '房产'],
-      hotPaper: [
-        { title: '哈尔滨交通执法腐败:251人被查 传前交通局长自杀', read: '20万' },
-        { title: '四川江安县一工业园区发生爆燃事故，致19人死亡12人受伤', read: '5万' },
-        { title: '实现零突破！中国自主研发抗艾滋病新药获批上市', read: '8万' },
-        { title: '央视“最低调”的主持人，工作26年从不化妆，妻子是央视“才女”', read: '10万' },
-        { title: '湖南慈利县一部长被指欺压寡妇，官方：言语不当，责令写检查', read: '3千' },
-        { title: '伊万卡遭邻居“围攻”豪宅抗议：我们受够你爸了', read: '9千' }
-      ]
+      hotShow: false,
+      news: [],
+      sortList: { picture: '图片', aviation: '航空', technology: '科技', house: '房产', automobile: '汽车', baby: '亲子' },
+      hotPaper: [],
+      hotDetail: {},
+      pagination: {
+        total: 0,
+        currPage: 1,
+        pageSize: 5
+      },
+      loading: false
     }
   },
   methods: {
@@ -133,9 +132,34 @@ export default {
     payDialogClose: function (done) {
       this.payPageShow = false
       done()
+    },
+    sortListClick (index) {
+      this.hotShow = false
+      this.loading = true
+      let timeout = Math.random() * 2000
+      setTimeout(() => {
+        this.activeIndex = index
+        this.pagination.currPage = 1
+        this.pagination.total = newData[index].length
+        this.news = newData[index].slice(0, 5)
+        this.loading = false
+      }, timeout)
+    },
+    hotClick (index) {
+      this.hotDetail = this.hotPaper[index]
+      this.hotShow = true
     }
   },
-  components: {pay}
+  components: {pay},
+  mounted () {
+    this.sortListClick('picture')
+    this.hotPaper = newData.hotPaper
+  },
+  watch: {
+    'pagination.currPage' (v) {
+      this.news = newData[this.activeIndex].slice((v - 1) * 5, v * 5)
+    }
+  }
 }
 </script>
 
@@ -186,7 +210,7 @@ export default {
   .el-footer{
     font-size: 12px;
     color: #adadad;
-    height: 100px !important;
+    height: auto !important;
     position: absolute;
     left: 0;
     width: 100%;
@@ -231,6 +255,25 @@ export default {
     text-align: left;
     color: black;
     cursor: pointer;
+  }
+  .hot-detail {
+    text-align: left;
+    padding: 0 40px 0 0;
+  }
+  .hot-detail .title {
+    font-weight: bold;
+    font-size: 20px;
+    padding: 20px 0 0 0;
+  }
+  .hot-detail .sub-title {
+    font-size: 12px;
+    color: #a7a7a7;
+  }
+  .hot-detail .text {
+    font-size: 16px;
+    color: #3f3f3f;
+    padding: 20px 0 0 0;
+    line-height: 40px;
   }
 </style>
 <style>
