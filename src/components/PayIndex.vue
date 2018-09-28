@@ -8,7 +8,6 @@
           :default-active="activeIndex"
           active-text-color="#ffd740"
           mode="horizontal"
-          @select="sortListClick"
         >
           <el-menu-item :index="'logo'">
             <div style="text-align: left;">
@@ -16,7 +15,7 @@
               <div class="ola-title">欧拉数术</div>
             </div>
           </el-menu-item>
-          <el-menu-item v-for="(item, index) in sortList" :key="index" :index="index">{{item}}</el-menu-item>
+          <el-menu-item v-for="(item, index) in sortList" :key="index" :index="index" @click="sortListClick(index)">{{item}}</el-menu-item>
         </el-menu>
         <span class="login-btn">
           <el-button type="primary">登录</el-button>
